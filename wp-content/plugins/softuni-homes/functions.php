@@ -140,41 +140,24 @@ function softuni_display_username() {
 }
 add_shortcode( 'display_username', 'softuni_display_username' );
 
-/**
- * It gets the content and counts the number of words
- *
- * @return void
- */
-function softunit_display_post_word_count( $atts ) {
-    $output = '';
-    $word_count = 0;
-    $post_id = '';
-
-    $attributes = shortcode_atts( array(
-		'post_id' => '',
-	), $atts );
-
-    if ( ! empty( $attributes['post_id'] ) ) {
-        $post_id = $attributes['post_id'];
-
-        $post = get_post( $attributes['post_id'] );
-        if ( ! empty( $post ) ) {
-            // @TODO: we have to strip the markup and Gutenberg items so we have a better result.
-            $post_content = $post->post_content;
-            $word_count = str_word_count( $post_content );
-        }
-
-    } else {
-        $output = 'You must add a post_id as an attribute.';
+function shortcode_user_avatar() {
+    if(is_user_logged_in()) {
+    global $current_user;
+    wp_get_current_user();
+    return get_avatar( $current_user -> ID, 120 );
     }
-
-    if ( ! empty( $word_count ) ) {
-        $output = 'The number of words for the Post ID ' . $post_id . ' is ' . $word_count;
+    else {
+    // If not logged in then show default avatar. Change the URL to show your own default avatar
+    return get_avatar( 'http://1.gravatar.com/avatar/ad524503a11cd5ca435acc9bb6523536?s=64', 120 );
     }
+    }
+    
+    add_shortcode('display-user-avatar','shortcode_user_avatar');
 
-    return $output;
-}
-add_shortcode( 'display_post_word_count', 'softunit_display_post_word_count' );
+    function name_shortcode() {
+        return $_GET['name'];
+    }
+    add_shortcode( 'Name', 'name_shortcode' );
 
 function softuni_update_home_visit_count( $post_id = 0 ) {
     if ( empty( $post_id ) ) {

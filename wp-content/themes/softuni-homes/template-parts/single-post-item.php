@@ -8,6 +8,9 @@
 			<span class="property-date">Homes visits: <?php echo get_post_meta( get_the_ID(), 'visits_count', true ); ?></span>
 			<span class="property-date"><?php the_date(); ?></span>
 		</div>
+		<div class="job-body">
+							<?php the_content(); ?>
+						</div>
 	</div>
 	<div class="property-image">
 		<div class="property-image-box">
