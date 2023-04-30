@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Jobs Enqueue
+ * homes Enqueue
  */
 function softuni_enqueue_scripts() {
 	wp_enqueue_script( 'softuni-script', plugins_url( 'scripts/scripts.js', __FILE__ ), array( 'jquery' ), 1.1 );
@@ -11,26 +11,26 @@ function softuni_enqueue_scripts() {
 add_action( 'wp_enqueue_scripts', 'softuni_enqueue_scripts' );
 
 /**
- * Functions takes care of the like of the job
+ * Functions takes care of the like of the home
  *
  * @return void
  */
-function softuni_job_like() {
-	$job_id = esc_attr( $_POST['job_id'] );
+function softuni_home_like() {
+	$home_id = esc_attr( $_POST['home_id'] );
 
-	$like_number = get_post_meta( $job_id, 'likes', true );
+	$like_number = get_post_meta( $home_id, 'likes', true );
 
     if ( empty( $like_number ) ) {
-        update_post_meta( $job_id, 'likes', 1 );
+        update_post_meta( $home_id, 'likes', 1 );
     } else {
         $like_number = $like_number + 1;
-        update_post_meta( $job_id, 'likes', $like_number );
+        update_post_meta( $home_id, 'likes', $like_number );
     }
 
     wp_die();
 }
-add_action( 'wp_ajax_nopriv_softuni_job_like', 'softuni_job_like' );
-add_action( 'wp_ajax_softuni_job_like', 'softuni_job_like' );
+add_action( 'wp_ajax_nopriv_softuni_home_like', 'softuni_home_like' );
+add_action( 'wp_ajax_softuni_home_like', 'softuni_home_like' );
 
 
 /**
@@ -59,28 +59,28 @@ function softuni_display_single_term( $post_id, $taxonomy ) {
 }
 
 /**
- * Displays related jobs from their category
+ * Displays related homes from their category
  *
  * @param [type] $post_id
  * @return void
  */
-function softuni_display_related_jobs( $post_id ) {
+function softuni_display_related_homes( $post_id ) {
 
 }
 
 /**
- * Displays other jobs from this company
+ * Displays other homes from this company
  *
  * @param [type] $post
  * @return void
  */
-function softuni_display_other_jobs_per_company( $job_id ) {
-    if ( empty( $job_id ) ) {
+function softuni_display_other_homes_per_company( $home_id ) {
+    if ( empty( $home_id ) ) {
         return;
     }
 
-    $jobs_args = array(
-        'post_type'         => 'job',
+    $homes_args = array(
+        'post_type'         => 'home',
         'post_status'       => 'publish',
         'orderby'           => 'name',
         'posts_per_page'    => 2,
@@ -88,33 +88,29 @@ function softuni_display_other_jobs_per_company( $job_id ) {
         // set a taxonomy query
     );
 
-    $jobs_query = new WP_Query( $jobs_args );
+    $homes_query = new WP_Query( $homes_args );
 
-    // var_dump( $jobs_query ); die();
+    // var_dump( $homes_query ); die();
 
-    if ( ! empty( $jobs_query ) ) {
+    if ( ! empty( $homes_query ) ) {
         ?>
-        <ul class="jobs-listing">
-            <?php foreach( $jobs_query->posts as $job ) { ?>
+        <ul class="homes-listing">
+            <?php foreach( $homes_query->posts as $home ) { ?>
 
-                <?php // var_dump( $job ); ?>
-                <li class="job-card">
-                    <div class="job-primary">
-                        <h2 class="job-title"><a href="#"><?php echo $job->post_title; ?></a></h2>
-                        <div class="job-meta">
-                            <a class="meta-company" href="#">Company Awesome Ltd.</a>
-                            <span class="meta-date">Posted 14 days ago</span>
-                        </div>
-                        <div class="job-details">
-                            <span class="job-location">The Hague (The Netherlands)</span>
-                            <span class="job-type">Contract staff</span>
-                        </div>
+            <?php // var_dump( $home ); ?>
+            <li class="home-card">
+                <div class="home-primary">
+                    <h2 class="home-title"><a href="#"><?php echo $home->post_title; ?></a></h2>
+                    <div class="home-meta">
+                        <a class="meta-company" href="#">Company Awesome Ltd.</a>
+                        <span class="meta-date">Posted 14 days ago</span>
                     </div>
-                    <div class="job-logo">
-                        <div class="job-logo-box">
-                            <img src="https://i.imgur.com/ZbILm3F.png" alt="">
-                        </div>
+                    <div class="home-details">
+                        <span class="home-location">The Hague (The Netherlands)</span>
+                        <span class="home-type">Contract staff</span>
                     </div>
+                </div>
+                    
                 </li>
             <?php } ?>
 		</ul>
@@ -158,6 +154,42 @@ function shortcode_user_avatar() {
         return $_GET['name'];
     }
     add_shortcode( 'Name', 'name_shortcode' );
+
+/**
+ * It gets the content and counts the number of words
+ *
+ * @return void
+ */
+function softunit_display_post_word_count( $atts ) {
+    $output = '';
+    $word_count = 0;
+    $post_id = '';
+
+    $attributes = shortcode_atts( array(
+		'post_id' => '',
+	), $atts );
+
+    if ( ! empty( $attributes['post_id'] ) ) {
+        $post_id = $attributes['post_id'];
+
+        $post = get_post( $attributes['post_id'] );
+        if ( ! empty( $post ) ) {
+            // @TODO: we have to strip the markup and Gutenberg items so we have a better result.
+            $post_content = $post->post_content;
+            $word_count = str_word_count( $post_content );
+        }
+
+    } else {
+        $output = 'You must add a post_id as an attribute.';
+    }
+
+    if ( ! empty( $word_count ) ) {
+        $output = 'The number of words for the Post ID ' . $post_id . ' is ' . $word_count;
+    }
+
+    return $output;
+}
+add_shortcode( 'display_post_word_count', 'softunit_display_post_word_count' );
 
 function softuni_update_home_visit_count( $post_id = 0 ) {
     if ( empty( $post_id ) ) {

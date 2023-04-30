@@ -1,18 +1,18 @@
 <?php
-/* Template Name: Display homes */
+/* Template Name: Display posts */
 ?>
 
 <?php get_header(); ?>
 
 <?php
-$homes_args = array(
-	'post_type'			=> 'home',
+$posts_args = array(
+	'post_type'			=> 'post',
 	'post_status'		=> 'publish',
 	'orderby'			=> 'date',
 	'order'				=> 'ASC',
 );
 
-$homes_query = new WP_Query( $homes_args );
+$posts_query = new WP_Query( $posts_args );
 ?>
 
 <?php
@@ -25,10 +25,10 @@ if ( have_posts() ) {
 }
 ?>
 
-<ul class="homes-listing">
-	<?php if ( $homes_query->have_posts() ) : ?>
+<ul class="posts-listing">
+	<?php if ( $posts_query->have_posts() ) : ?>
 
-		<?php while( $homes_query->have_posts() ) : $homes_query->the_post(); ?>
+		<?php while( $posts_query->have_posts() ) : $posts_query->the_post(); ?>
 
 			<?php get_template_part( 'template-parts/home', 'item' ); ?>
 

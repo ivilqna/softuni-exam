@@ -22,6 +22,6 @@
 		}
 		?>
 		</div>
-	</div>
+	
 	<a id="<?php echo get_the_ID(); ?>" class="like-button" href="#">Like (<?php echo get_post_meta( get_the_ID(), 'likes', true ) ?>)</a>
 </li>

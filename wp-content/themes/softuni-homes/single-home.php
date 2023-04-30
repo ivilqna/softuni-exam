@@ -6,13 +6,13 @@
 
 			<?php get_template_part( 'template-parts/single-post', 'item' ); ?>
 
-		<?php endwhile; ?>
+<?php endwhile; ?>
 
-		
-		<?php softuni_update_home_visit_count( get_the_ID() ) ?>
-	
-		<?php endif; ?>
 
-		</ul>
-		
-		<?php get_footer(); ?>
+<?php softuni_update_home_visit_count( get_the_ID() ) ?>
+
+<?php endif; ?>
+
+</ul>
+
+<?php get_footer(); ?>
