@@ -6,3 +6,4 @@
  */
 
 require 'cpt-homes.php';
+require 'functions.php';
