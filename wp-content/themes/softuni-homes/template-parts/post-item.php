@@ -14,7 +14,7 @@
             		if ( has_post_thumbnail() ) {
                 	the_post_thumbnail();
             		} else {
-                	echo '<img src="images/bedroom.jpg" alt="property image">';
+                	echo '<img src="https://localhost/softuni-exam/wp-content/uploads/2023/04/bedroom.png" alt="property image">';
             		}
             		?>
 					</div>
